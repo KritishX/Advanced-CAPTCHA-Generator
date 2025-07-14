@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if success %}Verification Successful{% else %}Verification Failed{% endif %} - CAPTCHA
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    {% if success %}
+        <h1 style="color: var(--success-color);">
+            <i class="fas fa-check-circle"></i> Verification Successful
+        </h1>
+        <p>You have successfully passed the security verification.</p>
+    {% else %}
+        <h1 style="color: var(--error-color);">
+            <i class="fas fa-times-circle"></i> Verification Failed
+        </h1>
+        <p>The CAPTCHA verification was unsuccessful.</p>
+    {% endif %}
+</div>
+
+{% if success %}
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <strong>Success!</strong> {{ message }}
+    </div>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+        <p style="color: #6b7280; margin-bottom: 1rem;">
+            <i class="fas fa-lock"></i> Your session is now verified and secure.
+        </p>
+        <a href="{{ url_for('index') }}" class="back-link">
+            <i class="fas fa-redo"></i> Try Another CAPTCHA
+        </a>
+    </div>
+{% else %}
+    {% if error_type == 'incorrect' %}
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Incorrect!</strong> {{ message }}
+        </div>
+        
+        {% if attempts_remaining and attempts_remaining > 0 %}
+            <div style="text-align: center; margin-top: 1rem;">
+                <p style="color: #6b7280; margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle"></i> You have {{ attempts_remaining }} attempt(s) remaining.
+                </p>
+                <a href="{{ url_for('index') }}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Go Back and Try Again
+                </a>
+            </div>
+        {% endif %}
+    {% elif error_type == 'expired' %}
+        <div class="alert alert-warning">
+            <i class="fas fa-clock"></i>
+            <strong>Session Expired!</strong> {{ message }}
+        </div>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <p style="color: #6b7280; margin-bottom: 1rem;">
+                <i class="fas fa-info-circle"></i> Please start a new verification session.
+            </p>
+            <a href="{{ url_for('index') }}" class="back-link">
+                <i class="fas fa-refresh"></i> Start New Session
+            </a>
+        </div>
+    {% elif error_type == 'max_attempts' %}
+        <div class="alert alert-error">
+            <i class="fas fa-ban"></i>
+            <strong>Maximum Attempts Reached!</strong> {{ message }}
+        </div>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <p style="color: #6b7280; margin-bottom: 1rem;">
+                <i class="fas fa-info-circle"></i> For security reasons, you need to start over.
+            </p>
+            <a href="{{ url_for('index') }}" class="back-link">
+                <i class="fas fa-refresh"></i> Start Over
+            </a>
+        </div>
+    {% elif error_type == 'rate_limit' %}
+        <div class="alert alert-warning">
+            <i class="fas fa-hourglass-half"></i>
+            <strong>Rate Limit Exceeded!</strong> {{ message }}
+        </div>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <p style="color: #6b7280; margin-bottom: 1rem;">
+                <i class="fas fa-info-circle"></i> Please wait a moment before trying again.
+            </p>
+            <a href="{{ url_for('index') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </a>
+        </div>
+    {% else %}
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Error!</strong> {{ message }}
+        </div>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="{{ url_for('index') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Go Back
+            </a>
+        </div>
+    {% endif %}
+{% endif %}
+
+{% if not success %}
+    <div class="security-info">
+        <h4><i class="fas fa-lightbulb"></i> Troubleshooting Tips</h4>
+        <ul>
+            <li>Make sure you enter the exact characters shown</li>
+            <li>Characters are case-sensitive (all uppercase) no need to use Capslock</li>
+            <li>Try refreshing the CAPTCHA for a clearer image</li>
+            <li>Ensure your browser has cookies enabled</li>
+            <li>Check your internet connection</li>
+        </ul>
+    </div>
+{% endif %}
+{% endblock %}

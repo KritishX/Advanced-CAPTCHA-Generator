@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}CAPTCHA Verification - Professional Security{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1><i class="fas fa-shield-alt"></i> CAPTCHA Verification</h1>
+    <p>Please complete the CAPTCHA to verify that you're human</p>
+</div>
+
+<div class="captcha-container">
+    <div class="captcha-image-wrapper">
+        <img src="{{ url_for('captcha_image') }}" alt="CAPTCHA Image" class="captcha-image" id="captchaImage">
+        <button type="button" class="refresh-btn" onclick="refreshCaptcha()" title="Refresh CAPTCHA">
+            <i class="fas fa-redo"></i>
+        </button>
+    </div>
+    <p style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">
+        Can't read the image? Click the refresh button to get a new one.
+    </p>
+</div>
+
+<form method="POST" action="{{ url_for('verify') }}">
+    <div class="form-group">
+        <label for="captcha_input" class="form-label">
+            <i class="fas fa-keyboard"></i> Enter the characters you see:
+        </label>
+        <input type="text" 
+               name="captcha_input" 
+               id="captcha_input"
+               class="form-input" 
+               placeholder="Enter CAPTCHA code" 
+               required 
+               autocomplete="off"
+               maxlength="8"
+               style="text-transform: uppercase;">
+    </div>
+    
+    <button type="submit" class="submit-btn">
+        <div class="loading-spinner"></div>
+        <span class="btn-text">
+            <i class="fas fa-check"></i> Verify CAPTCHA
+        </span>
+    </button>
+</form>
+
+<div class="security-info">
+    <h4><i class="fas fa-info-circle"></i> Additional Information</h4>
+    <ul>
+        <li>CAPTCHA expires after 5 minutes</li>
+        <li>All verification attempts are logged</li>
+        <li>Characters are case-sensitive (all uppercase) no need to use Capslock</li>
+        <li>A Simple CAPTCHA Generator using Image Processing</li>
+        <li>Developed by Kritish Dhital and Sagar Bahadur Chand</li>
+    </ul>
+</div>
+{% endblock %}
